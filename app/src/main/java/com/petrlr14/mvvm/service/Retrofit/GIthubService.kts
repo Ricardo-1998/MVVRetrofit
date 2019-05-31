@@ -2,6 +2,8 @@ package com.petrlr14.mvvm.service.Retrofit
 
 import javax.xml.ws.Response
 
+const val GITHUB_API_BASE_URL = "https://api.github.com/"
+
 interface GithubService{
 
     @GET("/users/{user}/repos")
