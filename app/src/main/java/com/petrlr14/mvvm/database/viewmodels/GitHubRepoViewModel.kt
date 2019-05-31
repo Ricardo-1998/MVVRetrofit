@@ -16,6 +16,22 @@ class GitHubRepoViewModel(private val app: Application) : AndroidViewModel(app) 
         repository= GitHubRepoRepository(repoDao)
     }
 
+    fun retrieveRepo(user:String)= viewModelScope.launc{
+        this@GitHubRepoViewModel.nuke()
+        val response = repository.retrieveRepoAsync(user).await()
+        if(response.isSuccessful) with(response){
+            this.body()?.forEach{
+                this@GitHubRepoViewModel.insert(it)
+            }
+        }else with(response){
+            when(this.code()){
+                404->{
+                    Toast.makeText(app, "usuario no encontrado", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     private suspend fun insert(repo:GitHubRepo)=repository.insert(repo)
 
     fun getAll():LiveData<List<GitHubRepo>>{
